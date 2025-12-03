@@ -1,0 +1,84 @@
+using System;
+
+class ElectricityBillingApp
+{
+    static void Main()
+    {
+        Console.Write("Enter number of consumers: ");
+        int n = int.Parse(Console.ReadLine());
+
+        double totalRevenue = 0;
+        double highestBill = 0;
+        string highestBillConsumer = "";
+        int domesticCount = 0, commercialCount = 0;
+
+        for (int i = 0; i < n; i++)
+        {
+            Console.WriteLine($"\n--- Consumer {i + 1} Details ---");
+
+            Console.Write("Consumer ID: ");
+            string consumerID = Console.ReadLine();
+
+            Console.Write("Units Consumed: ");
+            int units = int.Parse(Console.ReadLine());
+
+            Console.Write("Connection Type (1 = Domestic, 2 = Commercial): ");
+            int type = int.Parse(Console.ReadLine());
+
+            if (type == 1) domesticCount++;
+            else commercialCount++;
+
+            double baseCharge = 0;
+
+           
+            if (type == 1) 
+            {
+                if (units <= 100) baseCharge = units * 1.50;
+                else if (units <= 300) baseCharge = units * 2.50;
+                else baseCharge = units * 4.00;
+            }
+            else 
+            {
+                if (units <= 200) baseCharge = units * 5.00;
+                else if (units <= 500) baseCharge = units * 6.50;
+                else baseCharge = units * 8.00;
+            }
+
+            
+            double surcharge = baseCharge * 0.03;
+
+            double penalty = (units > 500) ? 200 : 0;
+
+            double totalBeforeDiscount = baseCharge + surcharge + penalty;
+
+            
+            double discount = (totalBeforeDiscount > 2000) ? totalBeforeDiscount * 0.05 : 0;
+            double finalBill = totalBeforeDiscount - discount;
+
+            
+            totalRevenue += finalBill;
+
+           
+            if (finalBill > highestBill)
+            {
+                highestBill = finalBill;
+                highestBillConsumer = consumerID;
+            }
+
+           
+            string readableType = (type == 1) ? "Domestic" : "Commercial";
+
+            Console.WriteLine(
+                $"{consumerID}  {readableType}  Units:{units}  " +
+                $"Base:{baseCharge:F2}  Surcharge:{surcharge:F2}  " +
+                $"Penalty:{penalty:F2}  Discount:{discount:F2}  Final:{finalBill:F2}");
+        }
+
+       
+        Console.WriteLine("\n--- SUMMARY REPORT ---");
+        Console.WriteLine($"Total Consumers: {n}");
+        Console.WriteLine($"Total Revenue: ₹{totalRevenue:F2}");
+        Console.WriteLine($"Highest Bill: {highestBillConsumer} ₹{highestBill:F2}");
+        Console.WriteLine($"Domestic: {domesticCount}   Commercial: {commercialCount}");
+    }
+}
